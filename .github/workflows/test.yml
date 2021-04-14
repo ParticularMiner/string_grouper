@@ -12,7 +12,11 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
         os: [ubuntu-latest, windows-latest]
-
+        include:
+            - os: ubuntu-latest
+              ls_name: pwd ; tree .
+            - os: windows-latest
+              ls_name: tree /f
     steps:
     - uses: actions/checkout@v2
     
@@ -22,7 +26,43 @@ jobs:
         python-version: ${{ matrix.python-version }}
     
     - name: Install package
-      run: pip install .
+      run: pip install -v .
     
+    - name: List packages
+      if: always()
+      run: pip list
+    
+    - name: Show folder contents
+      if: always()
+      run: ${{ matrix.ls_name }}
+    
+    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'ubuntu-latest' ) }}
+      name: Where are the libraries installed? (ubuntu)
+      run: |
+        tree -f -a $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/string_grouper 
+        tree -f -a $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/sparse_dot_topn 
+        tree -f -a $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/string_grouper_utils
+      
+    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'windows-latest' ) }}
+      name: Where are the libraries installed? (windows)
+      run: |
+        tree /f %pythonLocation%\Lib\site-packages\string_grouper 
+        tree /f %pythonLocation%\Lib\site-packages\sparse_dot_topn 
+        tree /f %pythonLocation%\Lib\site-packages\string_grouper_utils
+      shell: cmd
+      
+    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'ubuntu-latest' ) }}
+      name: Import Python-C++ bindings (ubuntu)
+      run: |
+          cp $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/sparse_dot_topn/*.so sparse_dot_topn/
+          tree -f -a sparse_dot_topn
+ 
+    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'windows-latest' ) }}
+      name: Import Python-C++ bindings (windows)
+      run: |
+          copy %pythonLocation%\Lib\site-packages\sparse_dot_topn\*.pyd sparse_dot_topn\
+          tree /f sparse_dot_topn
+      shell: cmd
+ 
     - name: Run tests
       run: python -m unittest
