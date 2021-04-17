@@ -36,14 +36,14 @@ jobs:
       if: always()
       run: ${{ matrix.ls_name }}
     
-    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'ubuntu-latest' ) }}
+    - if: ${{ ( (github.base_ref == 'new_awesome' || github.base_ref == 'free') && matrix.os == 'ubuntu-latest' ) }}
       name: Where are the libraries installed? (ubuntu)
       run: |
         tree -f -a $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/string_grouper 
         tree -f -a $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/sparse_dot_topn 
         tree -f -a $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/string_grouper_utils
       
-    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'windows-latest' ) }}
+    - if: ${{ ( (github.base_ref == 'new_awesome' || github.base_ref == 'free') && matrix.os == 'windows-latest' ) }}
       name: Where are the libraries installed? (windows)
       run: |
         tree /f %pythonLocation%\Lib\site-packages\string_grouper 
@@ -51,13 +51,13 @@ jobs:
         tree /f %pythonLocation%\Lib\site-packages\string_grouper_utils
       shell: cmd
       
-    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'ubuntu-latest' ) }}
+    - if: ${{ ( (github.base_ref == 'new_awesome' || github.base_ref == 'free') && matrix.os == 'ubuntu-latest' ) }}
       name: Import Python-C++ bindings (ubuntu)
       run: |
           cp $LD_LIBRARY_PATH/python${{ matrix.python-version }}/site-packages/sparse_dot_topn/*.so sparse_dot_topn/
           tree -f -a sparse_dot_topn
  
-    - if: ${{ ( github.base_ref == 'new_awesome' && matrix.os == 'windows-latest' ) }}
+    - if: ${{ ( (github.base_ref == 'new_awesome' || github.base_ref == 'free') && matrix.os == 'windows-latest' ) }}
       name: Import Python-C++ bindings (windows)
       run: |
           copy %pythonLocation%\Lib\site-packages\sparse_dot_topn\*.pyd sparse_dot_topn\
