@@ -15,7 +15,7 @@ jobs:
         include:
             - os: ubuntu-latest
               ls_name: pwd ; tree .
-              cat_command: cat ./work/_temp/*
+              cat_command: cat /home/runner/work/_temp/*
             - os: windows-latest
               ls_name: tree /f
               cat_command: cat .\work\_temp\*
