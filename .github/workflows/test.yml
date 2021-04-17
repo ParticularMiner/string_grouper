@@ -39,8 +39,5 @@ jobs:
       run: ${{ matrix.ls_name }}
     
     - name: Run tests
-      run: python -m unittest
-      
-    - name: If tests failed
-      if: ${{ failure() }}
-      run: ${{ matrix.cat_command }}
+      run: |
+        python -m unittest || ${{ matrix.cat_command }}
