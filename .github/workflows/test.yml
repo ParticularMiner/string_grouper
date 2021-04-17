@@ -15,10 +15,10 @@ jobs:
         include:
             - os: ubuntu-latest
               ls_name: pwd ; tree .
-              cat_command: cat work/*
+              cat_command: cat ./work/_temp/*
             - os: windows-latest
               ls_name: tree /f
-              cat_command: cat work\*
+              cat_command: cat .\work\_temp\*
     steps:
     - uses: actions/checkout@v2
     
