@@ -38,12 +38,12 @@ jobs:
       if: always()
       run: ${{ matrix.ls_name }}
     
-    - if: ${{ ( github.base_ref == 'new_awesome' ) }}
+    - if: ${{ ( github.base_ref == 'new_awesome'  || github.base_ref == 'free' ) }}
       name: Run tests
       run: |
         pip install pytest
         pytest -ra .
     
-    - if: ${{ ( github.base_ref != 'new_awesome' ) }}
+    - if: ${{ ( github.base_ref != 'new_awesome' && github.base_ref != 'free' ) }}
       name: Run tests
       run: python -m unittest
