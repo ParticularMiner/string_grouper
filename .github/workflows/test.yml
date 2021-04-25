@@ -1,0 +1,49 @@
+name: Run tests
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+        os: [ubuntu-latest, windows-latest]
+        include:
+            - os: ubuntu-latest
+              ls_name: pwd ; tree .
+              cat_command: cat /home/runner/work/_temp/*
+            - os: windows-latest
+              ls_name: tree /f
+              cat_command: cat .\work\_temp\*
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install package
+      run: pip install -v -e .
+    
+    - name: List packages
+      if: always()
+      run: pip list
+    
+    - name: Show folder contents
+      if: always()
+      run: ${{ matrix.ls_name }}
+    
+    - if: ${{ ( github.base_ref == 'new_awesome'  || github.base_ref == 'free' ) }}
+      name: Run tests
+      run: |
+        pip install pytest
+        pytest -ra .
+    
+    - if: ${{ ( github.base_ref != 'new_awesome' && github.base_ref != 'free' ) }}
+      name: Run tests
+      run: python -m unittest
